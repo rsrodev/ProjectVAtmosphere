@@ -1,0 +1,26 @@
+# Build outputs
+ASI/build/
+*.asi
+*.addon
+*.obj
+*.pdb
+*.ilk
+*.exp
+*.lib
+*.dll
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo
+
+# ThirdParty SDKs (download separately)
+ThirdParty/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# ReShade cache
+*.cso

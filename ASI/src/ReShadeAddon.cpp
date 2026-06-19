@@ -108,10 +108,10 @@ static bool OnSetUniformValue(
     return false;
 }
 
-static void SetPVAUniforms(reshade::api::effect_runtime* rt, reshade::api::effect_uniform_variable var)
+static void SetPVAUniforms(reshade::api::effect_runtime* rt, reshade::api::effect_uniform_variable var, void*)
 {
     char name[256];
-    rt->get_uniform_variable_name(var, name, sizeof(name));
+    rt->get_uniform_variable_name(var, name);
 
     if (strcmp(name, "PVA_CameraPosition") == 0)
     {
@@ -159,7 +159,7 @@ static void OnReshadeBeginEffects(
     if (!ReadSharedState())
         return;
 
-    runtime->enumerate_uniform_variables(nullptr, SetPVAUniforms);
+    runtime->enumerate_uniform_variables(nullptr, SetPVAUniforms, nullptr);
 }
 
 // ============================================================================

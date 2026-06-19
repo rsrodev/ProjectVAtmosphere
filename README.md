@@ -98,19 +98,23 @@ Project V Atmosphere creates the visual appearance of true volumetric clouds whi
 
 ### Prerequisites
 
-- Visual Studio 2022 or CMake 3.20+
-- [ScriptHookV SDK](http://www.dev-c.com/gtav/scripthookv/) (place in `ThirdParty/ScriptHookV/`)
+- Visual Studio 2022 (Community or higher)
+- [ScriptHookV SDK](http://www.dev-c.com/gtav/scripthookv/) — only the `.lib` file is needed (headers are included)
 - [ReShade SDK](https://github.com/crosire/reshade) (optional, for add-on build)
 
-### Build Steps
+### Build with Visual Studio (Recommended)
+
+1. Download `ScriptHookV.lib` from the [ScriptHookV SDK](http://www.dev-c.com/gtav/scripthookv/) and place it in `ThirdParty/ScriptHookV/lib/`
+2. Open `ASI/ProjectVAtmosphere.sln` in Visual Studio 2022
+3. Select **Release | x64** configuration
+4. Build Solution (Ctrl+Shift+B)
+5. Output files:
+   - `ASI/bin/Release/ProjectVAtmosphere.asi` — ScriptHookV plugin
+   - `ASI/bin/Release/ProjectVAtmosphere.addon` — ReShade add-on (optional)
+
+### Build with CMake (Alternative)
 
 ```bash
-# Create ThirdParty directory structure
-mkdir ThirdParty/ScriptHookV/inc
-mkdir ThirdParty/ScriptHookV/lib
-# Copy ScriptHookV SDK files to inc/ and lib/
-
-# Build with CMake
 cd ASI
 mkdir build && cd build
 cmake .. -G "Visual Studio 17 2022" -A x64
@@ -118,6 +122,26 @@ cmake --build . --config Release
 ```
 
 The output `ProjectVAtmosphere.asi` will be in `build/Release/`.
+
+### Project Structure
+
+```
+ASI/
+├── ProjectVAtmosphere.sln              ← Visual Studio Solution
+├── ProjectVAtmosphere_ASI/             ← ASI Plugin project
+│   ├── ProjectVAtmosphere_ASI.vcxproj
+│   └── ProjectVAtmosphere_ASI.vcxproj.filters
+├── ProjectVAtmosphere_Addon/           ← ReShade Add-on project
+│   ├── ProjectVAtmosphere_Addon.vcxproj
+│   └── ProjectVAtmosphere_Addon.vcxproj.filters
+├── exports.def                         ← DLL exports
+├── include/
+│   └── PVA_Bridge.h                    ← Shared header (state struct)
+├── src/
+│   ├── main.cpp                        ← ASI plugin source
+│   └── ReShadeAddon.cpp                ← ReShade add-on source
+└── CMakeLists.txt                      ← Alternative CMake build
+```
 
 ## Configuration
 

@@ -11,12 +11,13 @@
 #include <cstring>
 
 // ScriptHookV SDK
-#include "../../ThirdParty/ScriptHookV/inc/natives.h"
-#include "../../ThirdParty/ScriptHookV/inc/types.h"
-#include "../../ThirdParty/ScriptHookV/inc/enums.h"
-#include "../../ThirdParty/ScriptHookV/inc/main.h"
+// Include paths configured in .vcxproj AdditionalIncludeDirectories
+#include "natives.h"
+#include "types.h"
+#include "enums.h"
+#include "main.h"
 
-#include "../include/PVA_Bridge.h"
+#include "PVA_Bridge.h"
 
 // ============================================================================
 // GLOBALS

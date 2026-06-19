@@ -1,26 +1,38 @@
 # Build outputs
 ASI/build/
+ASI/bin/
+ASI/obj/
 *.asi
 *.addon
 *.obj
 *.pdb
 *.ilk
 *.exp
-*.lib
 *.dll
+
+# Ignore compiled .lib files (but keep placeholder text)
+*.lib
+!ASI/sdk/ScriptHookV/lib/PLACE_SCRIPTHOOKV_LIB_HERE.txt
+
+# Ignore actual ScriptHookV.lib binary (user must download separately)
+ASI/sdk/ScriptHookV/lib/*.lib
 
 # IDE
 .vs/
 .vscode/
 *.user
 *.suo
-
-# ThirdParty SDKs (download separately)
-ThirdParty/
+*.opensdf
+*.sdf
+*.ipch
+*.aps
+*.ncb
+ipch/
 
 # OS
 Thumbs.db
 .DS_Store
+desktop.ini
 
 # ReShade cache
 *.cso

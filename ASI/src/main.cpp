@@ -11,12 +11,10 @@
 #include <cstring>
 
 // ScriptHookV SDK
-#include "../../ThirdParty/ScriptHookV/inc/natives.h"
-#include "../../ThirdParty/ScriptHookV/inc/types.h"
-#include "../../ThirdParty/ScriptHookV/inc/enums.h"
-#include "../../ThirdParty/ScriptHookV/inc/main.h"
+#include "main.h"
+#include "natives.h"
 
-#include "../include/PVA_Bridge.h"
+#include "PVA_Bridge.h"
 
 // ============================================================================
 // GLOBALS
@@ -98,9 +96,8 @@ void DestroySharedMemory()
 
 void UpdateCameraState()
 {
-    // Get gameplay camera position and rotation
     Vector3 camPos = CAM::GET_GAMEPLAY_CAM_COORD();
-    Vector3 camRot = CAM::GET_GAMEPLAY_CAM_ROT(2); // Order: XYZ (Pitch, Roll, Yaw)
+    Vector3 camRot = CAM::GET_GAMEPLAY_CAM_ROT(2);
     float camFOV = CAM::GET_GAMEPLAY_CAM_FOV();
 
     g_SharedState->cameraX = camPos.x;
@@ -120,10 +117,9 @@ void UpdateCameraState()
 
 void UpdateSunState()
 {
-    // GTA V sun direction from time of day
-    int hours = CLOCK::GET_CLOCK_HOURS();
-    int minutes = CLOCK::GET_CLOCK_MINUTES();
-    int seconds = CLOCK::GET_CLOCK_SECONDS();
+    int hours = TIME::GET_CLOCK_HOURS();
+    int minutes = TIME::GET_CLOCK_MINUTES();
+    int seconds = TIME::GET_CLOCK_SECONDS();
 
     float timeOfDay = static_cast<float>(hours) +
                       static_cast<float>(minutes) / 60.0f +
@@ -189,11 +185,13 @@ PVA::WeatherState MapWeatherHash(uint32_t hash, float& outCoverage, float& outSt
 
 void UpdateWeatherState()
 {
-    // Get current weather
-    // Note: MISC::GET_PREV_WEATHER_TYPE_HASH_NAME and GET_NEXT give transitions
-    uint32_t currentHash = MISC::GET_PREV_WEATHER_TYPE_HASH_NAME();
-    uint32_t nextHash = MISC::GET_NEXT_WEATHER_TYPE_HASH_NAME();
-    float transition = MISC::GET_WEATHER_TYPE_TRANSITION();
+    uint32_t currentHash = GAMEPLAY::_GET_CURRENT_WEATHER_TYPE();
+    uint32_t nextHash = GAMEPLAY::_GET_NEXT_WEATHER_TYPE();
+
+    // Get weather transition progress via pointer output
+    Any transP0, transP1;
+    float transition = 0.0f;
+    GAMEPLAY::_GET_WEATHER_TYPE_TRANSITION(&transP0, &transP1, &transition);
 
     float currentCoverage, currentStorm;
     float nextCoverage, nextStorm;
@@ -209,28 +207,22 @@ void UpdateWeatherState()
     g_SharedState->cloudCoverage = currentCoverage * (1.0f - transition) + nextCoverage * transition;
     g_SharedState->stormIntensity = currentStorm * (1.0f - transition) + nextStorm * transition;
 
-    // Rain intensity
-    g_SharedState->rainIntensity = MISC::GET_RAIN_LEVEL();
+    // Rain intensity (SDK returns Any/DWORD, reinterpret as float)
+    Any rainRaw = GAMEPLAY::GET_RAIN_LEVEL();
+    g_SharedState->rainIntensity = *reinterpret_cast<float*>(&rainRaw);
 }
 
 void UpdateWindState()
 {
-    // GTA V wind
-    Vector3 wind = MISC::GET_WIND();
-    
-    float windX = wind.x;
-    float windZ = wind.y;
+    float speed = GAMEPLAY::GET_WIND_SPEED();
+    Vector3 windDir = GAMEPLAY::GET_WIND_DIRECTION();
 
-    float speed = sqrtf(windX * windX + windZ * windZ);
-    float direction = atan2f(windZ, windX) * 57.2957795f; // rad to deg
+    float direction = atan2f(windDir.y, windDir.x) * 57.2957795f;
     if (direction < 0.0f) direction += 360.0f;
 
-    g_SharedState->windSpeed = speed * 3.0f; // Scale to reasonable visual speed
+    g_SharedState->windSpeed = speed * 3.0f;
     g_SharedState->windDirection = direction;
-
-    // Gust intensity from wind variation
-    float windY = wind.z;
-    g_SharedState->windGustIntensity = fabsf(windY) * 2.0f;
+    g_SharedState->windGustIntensity = fabsf(windDir.z) * 2.0f;
 }
 
 void UpdatePlayerState()
@@ -252,7 +244,7 @@ void UpdatePlayerState()
     }
 
     g_SharedState->isInInterior = INTERIOR::GET_INTERIOR_FROM_ENTITY(player) != 0;
-    g_SharedState->isPaused = MISC::IS_PAUSE_MENU_ACTIVE();
+    g_SharedState->isPaused = UI::IS_PAUSE_MENU_ACTIVE();
 }
 
 // ============================================================================
@@ -272,7 +264,7 @@ void UpdateAtmosphereState()
     lastFrameTime = currentTime;
 
     // Skip updates when paused or in interior
-    if (MISC::IS_PAUSE_MENU_ACTIVE())
+    if (UI::IS_PAUSE_MENU_ACTIVE())
     {
         g_SharedState->isPaused = true;
         return;

@@ -11,7 +11,7 @@
 #include <cstring>
 #include <reshade.hpp>
 
-#include "../include/PVA_Bridge.h"
+#include "PVA_Bridge.h"
 
 // ============================================================================
 // SHARED MEMORY READER
@@ -108,67 +108,58 @@ static bool OnSetUniformValue(
     return false;
 }
 
+static void SetPVAUniforms(reshade::api::effect_runtime* rt, reshade::api::effect_uniform_variable var, void*)
+{
+    char name[256];
+    rt->get_uniform_variable_name(var, name);
+
+    if (strcmp(name, "PVA_CameraPosition") == 0)
+    {
+        float pos[3] = { g_LocalState.cameraX, g_LocalState.cameraY, g_LocalState.cameraZ };
+        rt->set_uniform_value_float(var, pos, 3);
+    }
+    else if (strcmp(name, "PVA_SunDirection") == 0)
+    {
+        float dir[3] = { g_LocalState.sunDirX, g_LocalState.sunDirY, g_LocalState.sunDirZ };
+        rt->set_uniform_value_float(var, dir, 3);
+    }
+    else if (strcmp(name, "PVA_TimeOfDay") == 0)
+    {
+        rt->set_uniform_value_float(var, &g_LocalState.timeOfDay, 1);
+    }
+    else if (strcmp(name, "PVA_WeatherState") == 0)
+    {
+        int32_t weather = static_cast<int32_t>(g_LocalState.weather);
+        rt->set_uniform_value_int(var, &weather, 1);
+    }
+    else if (strcmp(name, "PVA_WindSpeed") == 0)
+    {
+        rt->set_uniform_value_float(var, &g_LocalState.windSpeed, 1);
+    }
+    else if (strcmp(name, "PVA_WindDirection") == 0)
+    {
+        rt->set_uniform_value_float(var, &g_LocalState.windDirection, 1);
+    }
+    else if (strcmp(name, "PVA_StormIntensity") == 0)
+    {
+        rt->set_uniform_value_float(var, &g_LocalState.stormIntensity, 1);
+    }
+    else if (strcmp(name, "PVA_CloudCoverage") == 0)
+    {
+        rt->set_uniform_value_float(var, &g_LocalState.cloudCoverage, 1);
+    }
+}
+
 static void OnReshadeBeginEffects(
     reshade::api::effect_runtime* runtime,
     reshade::api::command_list* cmd_list,
     reshade::api::resource_view rtv,
     reshade::api::resource_view rtv_srgb)
 {
-    // Read game state from shared memory
     if (!ReadSharedState())
         return;
 
-    // Set uniforms on the effect
-    // Find and set each PVA uniform
-    runtime->enumerate_uniform_variables(nullptr,
-        [&](reshade::api::effect_runtime* rt, reshade::api::effect_uniform_variable var) {
-            char name[256];
-            rt->get_uniform_variable_name(var, name, sizeof(name));
-
-            // Camera position
-            if (strcmp(name, "PVA_CameraPosition") == 0)
-            {
-                float pos[3] = { g_LocalState.cameraX, g_LocalState.cameraY, g_LocalState.cameraZ };
-                rt->set_uniform_value_float(var, pos, 3);
-            }
-            // Sun direction
-            else if (strcmp(name, "PVA_SunDirection") == 0)
-            {
-                float dir[3] = { g_LocalState.sunDirX, g_LocalState.sunDirY, g_LocalState.sunDirZ };
-                rt->set_uniform_value_float(var, dir, 3);
-            }
-            // Time of day
-            else if (strcmp(name, "PVA_TimeOfDay") == 0)
-            {
-                rt->set_uniform_value_float(var, &g_LocalState.timeOfDay, 1);
-            }
-            // Weather state
-            else if (strcmp(name, "PVA_WeatherState") == 0)
-            {
-                int32_t weather = static_cast<int32_t>(g_LocalState.weather);
-                rt->set_uniform_value_int(var, &weather, 1);
-            }
-            // Wind speed
-            else if (strcmp(name, "PVA_WindSpeed") == 0)
-            {
-                rt->set_uniform_value_float(var, &g_LocalState.windSpeed, 1);
-            }
-            // Wind direction
-            else if (strcmp(name, "PVA_WindDirection") == 0)
-            {
-                rt->set_uniform_value_float(var, &g_LocalState.windDirection, 1);
-            }
-            // Storm intensity
-            else if (strcmp(name, "PVA_StormIntensity") == 0)
-            {
-                rt->set_uniform_value_float(var, &g_LocalState.stormIntensity, 1);
-            }
-            // Cloud coverage from game
-            else if (strcmp(name, "PVA_CloudCoverage") == 0)
-            {
-                rt->set_uniform_value_float(var, &g_LocalState.cloudCoverage, 1);
-            }
-        });
+    runtime->enumerate_uniform_variables(nullptr, SetPVAUniforms, nullptr);
 }
 
 // ============================================================================

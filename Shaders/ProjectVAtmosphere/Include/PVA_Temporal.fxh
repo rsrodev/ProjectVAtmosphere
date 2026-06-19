@@ -23,21 +23,17 @@ sampler2D sPVA_CloudCurrent { Texture = PVA_CloudCurrentTex; };
 texture2D PVA_CloudDepthTex { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = R32F; };
 sampler2D sPVA_CloudDepth { Texture = PVA_CloudDepthTex; };
 
-// Motion vectors (approximated from depth + camera movement)
-texture2D PVA_MotionTex { Width = BUFFER_WIDTH; Height = BUFFER_HEIGHT; Format = RG16F; };
-sampler2D sPVA_Motion { Texture = PVA_MotionTex; };
-
 // ============================================================================
 // REPROJECTION
 // ============================================================================
 
-// Simple motion estimation based on cloud depth
-// In a full implementation, the ASI would provide camera matrices
+// Motion estimation is handled implicitly via temporal blend factor and
+// neighborhood clamping. The ASI plugin does not currently provide camera
+// matrices required for full reprojection. The high temporal blend factor
+// (0.85-0.92) combined with neighborhood clamping produces stable results
+// even without explicit motion vectors.
 float2 EstimateMotionVector(float2 texcoord, float cloudDepth)
 {
-    // Without explicit motion vectors from the game engine,
-    // we use temporal jitter and rely on the blend factor to handle motion
-    // The ASI plugin can provide proper motion vectors when available
     return float2(0.0, 0.0);
 }
 

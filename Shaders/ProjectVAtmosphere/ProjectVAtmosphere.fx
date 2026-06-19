@@ -103,10 +103,11 @@ sampler2D sPVA_CloudHalfResDepth { Texture = PVA_CloudHalfResDepthTex; };
 float GetLinearDepth(float2 texcoord)
 {
     float rawDepth = ReShade::GetLinearizedDepth(texcoord);
-    // If depth is near maximum (sky), return a very large value so clouds render
-    if (rawDepth > 0.99)
+    // GTA V far plane is much larger than default 1000.
+    // Treat near-max OR near-zero depth as sky (handles reversed depth buffers).
+    if (rawDepth > 0.97 || rawDepth < 0.03)
         return 200000.0;
-    return rawDepth * RESHADE_DEPTH_LINEARIZATION_FAR_PLANE;
+    return rawDepth * 10000.0;
 }
 
 // ============================================================================

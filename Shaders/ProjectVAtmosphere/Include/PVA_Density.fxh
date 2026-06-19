@@ -115,8 +115,9 @@ float SampleCloudShape(float3 worldPos, WeatherData weather)
     // Sample base shape noise
     float baseShape = CloudShapeNoise(scaledPos);
     
-    // Apply coverage remapping
-    float coverageRemapped = RemapClamped(baseShape, 1.0 - weather.coverage, 1.0, 0.0, 1.0);
+    // Apply coverage remapping — lower threshold means more visible clouds
+    float threshold = (1.0 - weather.coverage) * 0.7;
+    float coverageRemapped = RemapClamped(baseShape, threshold, 1.0, 0.0, 1.0);
     
     // Apply height gradient
     float density = coverageRemapped * heightGrad;

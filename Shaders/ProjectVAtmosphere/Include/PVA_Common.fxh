@@ -66,7 +66,7 @@ uniform float PVA_CloudCoverage <
     ui_tooltip = "Overall cloud coverage amount";
     ui_category = "Clouds";
     ui_min = 0.0; ui_max = 1.0; ui_step = 0.01;
-> = 0.45;
+> = 0.55;
 
 uniform float PVA_CloudDensity <
     ui_type = "slider";

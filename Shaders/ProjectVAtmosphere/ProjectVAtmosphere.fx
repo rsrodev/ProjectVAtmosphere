@@ -65,17 +65,19 @@ uniform bool PVA_EnableTemporal <
     ui_category = "Global";
 > = true;
 
+#ifndef PVA_DISABLE_DEBUG
 uniform bool PVA_DebugDensity <
     ui_label = "Debug: Show Density";
-    ui_tooltip = "Visualize cloud density field";
+    ui_tooltip = "Visualize raw cloud density field (developer tool)";
     ui_category = "Debug";
 > = false;
 
 uniform bool PVA_DebugShadows <
     ui_label = "Debug: Show Shadows";
-    ui_tooltip = "Visualize shadow map";
+    ui_tooltip = "Visualize shadow intensity (developer tool)";
     ui_category = "Debug";
 > = false;
+#endif
 
 // ============================================================================
 // TEXTURES & SAMPLERS
@@ -100,8 +102,6 @@ sampler2D sPVA_CloudHalfResDepth { Texture = PVA_CloudHalfResDepthTex; };
 
 float GetLinearDepth(float2 texcoord)
 {
-    float depth = tex2Dlod(sPVA_Depth, float4(texcoord, 0, 0)).x;
-    // ReShade linearized depth (0=near, 1=far)
     return ReShade::GetLinearizedDepth(texcoord) * RESHADE_DEPTH_LINEARIZATION_FAR_PLANE;
 }
 
@@ -281,10 +281,11 @@ float4 PS_Composite(VS_OUTPUT input) : SV_Target
     }
     
     // ---- DEBUG VISUALIZATION ----
+#ifndef PVA_DISABLE_DEBUG
     if (PVA_DebugDensity)
     {
-        float3 viewDir = GetViewDirection(texcoord);
-        float3 samplePos = PVA_CameraPosition + viewDir * 2000.0;
+        float3 dbgDir = GetViewDirection(texcoord);
+        float3 samplePos = PVA_CameraPosition + dbgDir * 2000.0;
         if (samplePos.y >= PVA_CloudBase && samplePos.y <= PVA_CloudTop)
         {
             float d = SampleCloudDensityCheap(samplePos);
@@ -294,11 +295,12 @@ float4 PS_Composite(VS_OUTPUT input) : SV_Target
     
     if (PVA_DebugShadows)
     {
-        float3 viewDir = GetViewDirection(texcoord);
-        float3 worldPos = PVA_CameraPosition + viewDir * sceneDepth;
-        float shadow = CalculateCloudShadow(worldPos);
+        float3 dbgDir = GetViewDirection(texcoord);
+        float3 dbgPos = PVA_CameraPosition + dbgDir * sceneDepth;
+        float shadow = CalculateCloudShadow(dbgPos);
         return float4(shadow, shadow, shadow, 1.0);
     }
+#endif
     
     return float4(finalColor, 1.0);
 }

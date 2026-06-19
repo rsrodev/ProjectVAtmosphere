@@ -190,8 +190,10 @@ float CloudShapeNoise(float3 p)
     float perlin = FBM_Gradient(p, 3, 2.0, 0.5) * 0.5 + 0.5;
     float worley = FBM_Worley(p, 2, 2.5, 0.5);
     
-    // Perlin-Worley blend: Perlin controls large shape, Worley adds billowy edges
-    return RemapClamped(perlin, worley * 0.3, 1.0, 0.0, 1.0);
+    // Perlin-Worley blend: combine to produce billowy cloud shapes
+    // Bias toward higher values to ensure clouds are visible
+    float shape = perlin * 0.7 + worley * 0.3;
+    return saturate(shape);
 }
 
 // High-frequency detail noise (erosion)

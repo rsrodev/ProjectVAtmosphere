@@ -61,9 +61,9 @@ float LightMarch(float3 position)
 {
     float3 lightDir = normalize(PVA_SunDirection);
     
-    // March toward sun through cloud
-    float cloudThickness = PVA_CloudTop - PVA_CloudBase;
-    float stepSize = cloudThickness / float(LIGHT_STEPS);
+    // March toward sun through cloud — use distance to cloud top, not full thickness
+    float distToTop = max(PVA_CloudTop - position.y, 100.0);
+    float stepSize = distToTop / float(LIGHT_STEPS);
     
     float totalDensity = 0.0;
     float3 samplePos = position;
@@ -78,7 +78,7 @@ float LightMarch(float3 position)
             break;
             
         float density = SampleCloudDensityCheap(samplePos);
-        totalDensity += density * stepSize * 0.01;
+        totalDensity += density * stepSize * 0.0005;
     }
     
     return BeerTransmittance(totalDensity);
@@ -160,8 +160,11 @@ CloudLighting CalculateCloudLighting(
     // Storm darkening
     float stormDarken = lerp(1.0, 0.3, PVA_StormIntensity * saturate(PVA_CloudCoverage));
     
+    // Minimum visibility floor — ensures clouds are always visible
+    float3 minAmbient = float3(0.15, 0.15, 0.18);
+    
     // Combine
-    result.color = (directLight + ambient + groundBounce) * stormDarken;
+    result.color = max(directLight + ambient + groundBounce, minAmbient) * stormDarken;
     result.transmittance = BeerTransmittance(opticalDepth);
     
     return result;

@@ -118,6 +118,11 @@ static void SetPVAUniforms(reshade::api::effect_runtime* rt, reshade::api::effec
         float pos[3] = { g_LocalState.cameraX, g_LocalState.cameraY, g_LocalState.cameraZ };
         rt->set_uniform_value_float(var, pos, 3);
     }
+    else if (strcmp(name, "PVA_CameraDirection") == 0)
+    {
+        float dir[3] = { g_LocalState.cameraDirX, g_LocalState.cameraDirY, g_LocalState.cameraDirZ };
+        rt->set_uniform_value_float(var, dir, 3);
+    }
     else if (strcmp(name, "PVA_SunDirection") == 0)
     {
         float dir[3] = { g_LocalState.sunDirX, g_LocalState.sunDirY, g_LocalState.sunDirZ };

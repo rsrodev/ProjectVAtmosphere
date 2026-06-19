@@ -11,7 +11,7 @@
 #include <cstring>
 #include <reshade.hpp>
 
-#include "../include/PVA_Bridge.h"
+#include "PVA_Bridge.h"
 
 // ============================================================================
 // SHARED MEMORY READER

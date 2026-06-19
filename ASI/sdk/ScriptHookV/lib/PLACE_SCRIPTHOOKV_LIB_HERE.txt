@@ -1,0 +1,4 @@
+Place ScriptHookV.lib in this folder.
+
+Download from: http://www.dev-c.com/gtav/scripthookv/
+Extract the SDK archive and copy ScriptHookV.lib here.

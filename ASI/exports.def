@@ -1,3 +1,2 @@
-LIBRARY "ProjectVAtmosphere"
 EXPORTS
     DllMain PRIVATE

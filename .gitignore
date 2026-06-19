@@ -12,10 +12,10 @@ ASI/obj/
 
 # Ignore compiled .lib files (but keep placeholder text)
 *.lib
-!ThirdParty/ScriptHookV/lib/PLACE_SCRIPTHOOKV_LIB_HERE.txt
+!ASI/sdk/ScriptHookV/lib/PLACE_SCRIPTHOOKV_LIB_HERE.txt
 
 # Ignore actual ScriptHookV.lib binary (user must download separately)
-ThirdParty/ScriptHookV/lib/*.lib
+ASI/sdk/ScriptHookV/lib/*.lib
 
 # IDE
 .vs/

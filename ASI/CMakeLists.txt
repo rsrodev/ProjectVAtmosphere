@@ -14,12 +14,12 @@ add_library(ProjectVAtmosphere SHARED
 
 target_include_directories(ProjectVAtmosphere PRIVATE
     include
-    ../ThirdParty/ScriptHookV/inc
+    sdk/ScriptHookV
 )
 
 # Link against ScriptHookV SDK
 target_link_libraries(ProjectVAtmosphere PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/../ThirdParty/ScriptHookV/lib/ScriptHookV.lib
+    ${CMAKE_CURRENT_SOURCE_DIR}/sdk/ScriptHookV/lib/ScriptHookV.lib
 )
 
 # Output as .asi extension
@@ -43,14 +43,14 @@ endif()
 # ==============================================================================
 
 # Requires ReShade SDK headers
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../ThirdParty/ReShade/include/reshade.hpp")
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/sdk/ReShade/reshade.hpp")
     add_library(ProjectVAtmosphere_Addon SHARED
         src/ReShadeAddon.cpp
     )
 
     target_include_directories(ProjectVAtmosphere_Addon PRIVATE
         include
-        ../ThirdParty/ReShade/include
+        sdk/ReShade
     )
 
     set_target_properties(ProjectVAtmosphere_Addon PROPERTIES

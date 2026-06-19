@@ -64,13 +64,13 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;PVA_ASI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\include;$(ProjectDir)..\..\ThirdParty\ScriptHookV\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\include;$(ProjectDir)..\sdk\ScriptHookV;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\..\ThirdParty\ScriptHookV\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\sdk\ScriptHookV\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>ScriptHookV.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>$(ProjectDir)..\exports.def</ModuleDefinitionFile>
     </Link>
@@ -84,7 +84,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;PVA_ASI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\include;$(ProjectDir)..\..\ThirdParty\ScriptHookV\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\include;$(ProjectDir)..\sdk\ScriptHookV;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <Optimization>MaxSpeed</Optimization>
       <BufferSecurityCheck>false</BufferSecurityCheck>
@@ -94,7 +94,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\..\ThirdParty\ScriptHookV\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\sdk\ScriptHookV\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>ScriptHookV.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <ModuleDefinitionFile>$(ProjectDir)..\exports.def</ModuleDefinitionFile>
@@ -105,6 +105,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\PVA_Bridge.h" />
+    <ClInclude Include="..\sdk\ScriptHookV\main.h" />
+    <ClInclude Include="..\sdk\ScriptHookV\natives.h" />
+    <ClInclude Include="..\sdk\ScriptHookV\nativeCaller.h" />
+    <ClInclude Include="..\sdk\ScriptHookV\types.h" />
+    <ClInclude Include="..\sdk\ScriptHookV\enums.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\exports.def" />

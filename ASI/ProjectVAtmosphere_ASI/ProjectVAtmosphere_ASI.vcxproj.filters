@@ -19,6 +19,21 @@
     <ClInclude Include="..\include\PVA_Bridge.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\sdk\ScriptHookV\main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sdk\ScriptHookV\natives.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sdk\ScriptHookV\nativeCaller.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sdk\ScriptHookV\types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sdk\ScriptHookV\enums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\exports.def">

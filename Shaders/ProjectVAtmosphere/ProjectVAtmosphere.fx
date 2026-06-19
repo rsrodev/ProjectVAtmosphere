@@ -116,7 +116,7 @@ float GetLinearDepth(float2 texcoord)
 
 float3 GetViewDirection(float2 texcoord)
 {
-    // Reconstruct view direction from UV
+    // Reconstruct view direction from UV in camera-local space
     float2 ndc = texcoord * 2.0 - 1.0;
     ndc.y = -ndc.y; // Flip Y
     
@@ -124,12 +124,22 @@ float3 GetViewDirection(float2 texcoord)
     float fov = 1.2; // ~69 degrees
     float aspect = float(BUFFER_WIDTH) / float(BUFFER_HEIGHT);
     
-    float3 dir;
-    dir.x = ndc.x * aspect * tan(fov * 0.5);
-    dir.y = ndc.y * tan(fov * 0.5);
-    dir.z = 1.0;
+    float3 localDir;
+    localDir.x = ndc.x * aspect * tan(fov * 0.5);
+    localDir.y = ndc.y * tan(fov * 0.5);
+    localDir.z = 1.0;
+    localDir = normalize(localDir);
     
-    return normalize(dir);
+    // Transform from camera-local to world space using camera direction
+    float3 forward = normalize(PVA_CameraDirection);
+    // Avoid degenerate case when forward is exactly up/down
+    float3 worldUp = abs(forward.y) > 0.99 ? float3(0, 0, 1) : float3(0, 1, 0);
+    float3 right = normalize(cross(worldUp, forward));
+    float3 up = cross(forward, right);
+    
+    // Build rotation: local X->right, local Y->up, local Z->forward
+    float3 worldDir = right * localDir.x + up * localDir.y + forward * localDir.z;
+    return normalize(worldDir);
 }
 
 // ============================================================================

@@ -208,6 +208,14 @@ uniform float3 PVA_CameraPosition <
     ui_min = -10000.0; ui_max = 10000.0;
 > = float3(0.0, 100.0, 0.0);
 
+uniform float3 PVA_CameraDirection <
+    ui_type = "slider";
+    ui_label = "Camera Direction";
+    ui_tooltip = "Camera forward direction (auto from ASI if available)";
+    ui_category = "Engine State";
+    ui_min = -1.0; ui_max = 1.0;
+> = float3(0.0, 0.0, 1.0);
+
 uniform int PVA_WeatherState <
     ui_type = "combo";
     ui_label = "Weather State";
@@ -308,5 +316,5 @@ float3 GetAmbientColor()
     float3 color = lerp(nightAmbient, dayAmbient, dayFactor);
     color = lerp(color, sunsetAmbient, smoothstep(0.0, 0.15, sunY) * smoothstep(0.3, 0.15, sunY));
     
-    return color * PVA_LightIntensity * 0.3;
+    return color * PVA_LightIntensity * 0.7;
 }

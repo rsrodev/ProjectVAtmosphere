@@ -102,7 +102,11 @@ sampler2D sPVA_CloudHalfResDepth { Texture = PVA_CloudHalfResDepthTex; };
 
 float GetLinearDepth(float2 texcoord)
 {
-    return ReShade::GetLinearizedDepth(texcoord) * RESHADE_DEPTH_LINEARIZATION_FAR_PLANE;
+    float rawDepth = ReShade::GetLinearizedDepth(texcoord);
+    // If depth is near maximum (sky), return a very large value so clouds render
+    if (rawDepth > 0.99)
+        return 200000.0;
+    return rawDepth * RESHADE_DEPTH_LINEARIZATION_FAR_PLANE;
 }
 
 // ============================================================================
@@ -244,6 +248,14 @@ float4 PS_Composite(VS_OUTPUT input) : SV_Target
     // Cloud color (premultiplied) and transmittance
     float3 cloudColor = cloudData.rgb;
     float cloudTransmittance = cloudData.a;
+    
+    // Safety: uninitialized temporal buffers read as (0,0,0,0) which would
+    // zero out the scene. If alpha=0 with no cloud color, treat as no clouds.
+    if (cloudTransmittance <= 0.001 && dot(cloudColor, float3(1,1,1)) < 0.001)
+    {
+        cloudTransmittance = 1.0;
+        cloudColor = float3(0, 0, 0);
+    }
     
     // ---- SHADOW PASS ----
     if (PVA_EnableShadows && sceneDepth < 50000.0)

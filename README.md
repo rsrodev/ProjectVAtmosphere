@@ -60,30 +60,35 @@ Project V Atmosphere creates the visual appearance of true volumetric clouds whi
 
 ### Requirements
 
-- GTA V (Steam version recommended)
+- GTA V Singleplayer (Steam, Rockstar Launcher, or Epic Games Store)
 - [ReShade 5.0+](https://reshade.me/) installed for GTA V
 - [ScriptHookV](http://www.dev-c.com/gtav/scripthookv/) installed
-- DirectX 11
+- ASI Loader (included with ScriptHookV)
 
-### Shader Installation
+### Automatic Installation (Recommended)
 
-1. Copy the `Shaders/ProjectVAtmosphere/` folder to your ReShade shader directory:
-   ```
-   <GTA V>/reshade-shaders/Shaders/ProjectVAtmosphere/
-   ```
+Run `install.bat` — the installer automatically detects your GTA V directory (Steam, Rockstar, Epic) and installs all components.
 
-2. Copy a preset from `Presets/` to your ReShade presets directory:
-   ```
-   <GTA V>/reshade-shaders/Presets/
-   ```
+```powershell
+# Or use PowerShell directly:
+.\Install.ps1
 
-3. Enable "Project V Atmosphere" in the ReShade overlay (Home key).
+# Specify path manually:
+.\Install.ps1 -GtaPath "D:\Games\Grand Theft Auto V"
+```
 
-### ASI Plugin Installation (Optional, for automatic game state)
+See [Documentation/INSTALL.md](Documentation/INSTALL.md) for details and troubleshooting.
 
-1. Build the ASI plugin (see Building below), or use a pre-built release.
-2. Copy `ProjectVAtmosphere.asi` to your GTA V root directory.
-3. The plugin automatically bridges game state to the shader. Without it, you can manually set time/weather/position via the ReShade UI.
+### Manual Installation
+
+1. Copy `Shaders/ProjectVAtmosphere/` to `<GTA V>/reshade-shaders/Shaders/ProjectVAtmosphere/`
+2. Copy `Presets/PVA_*.ini` to `<GTA V>/reshade-shaders/Presets/`
+3. Copy `ProjectVAtmosphere.asi` to GTA V root (optional, for automatic game state)
+4. Enable "Project V Atmosphere" in the ReShade overlay (Home key)
+
+### Uninstallation
+
+Run `Uninstall.bat` or `Install.ps1 -Uninstall`. Only removes Project V Atmosphere files.
 
 ### Preset Selection Guide
 
@@ -202,6 +207,13 @@ Clouds are generated using a Perlin-Worley hybrid noise for base shape, with Wor
 - Front-to-back accumulation with neighborhood clamping
 - Depth-aware bilateral upsampling from half to full resolution
 - History rejection on depth discontinuities and screen edges
+
+## Documentation
+
+- [BUILD.md](Documentation/BUILD.md) — Build prerequisites and instructions
+- [INSTALL.md](Documentation/INSTALL.md) — Installation guide with FAQ
+- [ARCHITECTURE.md](Documentation/ARCHITECTURE.md) — Technical architecture deep-dive
+- [PERFORMANCE.md](Documentation/PERFORMANCE.md) — Performance budget and optimization details
 
 ## License
 
